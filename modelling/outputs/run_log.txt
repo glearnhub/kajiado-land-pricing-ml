@@ -1,0 +1,80 @@
+Records in cleaned workbook: 2,717
+  Has value and area                             1,507
+  Vacant land only (no buildings mentioned)      1,458
+  Exact duplicates removed                       1,444
+  Section known                                  1,440
+  Price per acre within 1st-99th percentile      1,410
+
+Modelling dataset: 1,410 parcels, 9 features
+                  count unique    top freq       mean        std       min       25%        50%        75%        max
+log_area_ha      1410.0    NaN    NaN  NaN  -2.339302    1.40928 -5.298317 -3.101093  -2.995732  -2.302585   4.623894
+location           1410      9  Ngong  498        NaN        NaN       NaN       NaN        NaN        NaN        NaN
+year_2023        1410.0    NaN    NaN  NaN   0.809929   0.392496       0.0       1.0        1.0        1.0        1.0
+dist_km            47.0    NaN    NaN  NaN   6.382979  16.041852       1.0      1.55        3.0        6.4      111.0
+road_access      1410.0    NaN    NaN  NaN   0.089362   0.285366       0.0       0.0        0.0        0.0        1.0
+near_amenity     1410.0    NaN    NaN  NaN   0.039007   0.193681       0.0       0.0        0.0        0.0        1.0
+off_road         1410.0    NaN    NaN  NaN   0.038298   0.191983       0.0       0.0        0.0        0.0        1.0
+has_description  1410.0    NaN    NaN  NaN   0.704255   0.456539       0.0       0.0        1.0        1.0        1.0
+log_parcel_no    1405.0    NaN    NaN  NaN  10.276761   1.124851  2.772589  9.895254  10.264339  11.112523  12.178146
+Parcel blocks (groups): 592
+
+Train 970 | Validation 169 | Test 271  (no parcel block shared between sets)
+
+Tuning Multiple Linear Regression ...
+  validation: MAE (KSh) 2,804,085.778, RMSE (KSh) 5,430,883.083, MAPE (%) 147.239, R2 (log) 0.092, R2 (KSh) -0.171
+
+Tuning Random Forest ...
+  validation: MAE (KSh) 2,498,697.573, RMSE (KSh) 4,970,125.082, MAPE (%) 132.332, R2 (log) 0.321, R2 (KSh) 0.020
+
+Tuning Support Vector Machine ...
+  validation: MAE (KSh) 2,836,033.951, RMSE (KSh) 6,390,696.328, MAPE (%) 158.122, R2 (log) 0.186, R2 (KSh) -0.621
+
+Tuning Gradient Boosting ...
+  validation: MAE (KSh) 2,651,221.917, RMSE (KSh) 5,111,589.719, MAPE (%) 143.296, R2 (log) 0.284, R2 (KSh) -0.037
+
+Tuning XGBoost ...
+  validation: MAE (KSh) 2,692,120.852, RMSE (KSh) 5,206,292.702, MAPE (%) 147.589, R2 (log) 0.219, R2 (KSh) -0.076
+
+Tuning Artificial Neural Network ...
+  validation: MAE (KSh) 2,695,194.970, RMSE (KSh) 5,271,681.862, MAPE (%) 124.956, R2 (log) 0.129, R2 (KSh) -0.103
+
+VALIDATION RESULTS
+                             Model  Best CV MAE log    MAE (KSh)   RMSE (KSh)  MAPE (%)  R2 (log)  R2 (KSh)
+Benchmark: section median per acre              NaN 14190668.348 90823642.531   913.997    -0.768  -326.366
+        Multiple Linear Regression            1.039  2804085.778  5430883.083   147.239     0.092    -0.171
+                     Random Forest            0.951  2498697.573  4970125.082   132.332     0.321     0.020
+            Support Vector Machine            0.976  2836033.951  6390696.328   158.122     0.186    -0.621
+                 Gradient Boosting            0.946  2651221.917  5111589.719   143.296     0.284    -0.037
+                           XGBoost            0.946  2692120.852  5206292.702   147.589     0.219    -0.076
+         Artificial Neural Network            1.064  2695194.970  5271681.862   124.956     0.129    -0.103
+
+Selected model (lowest validation MAE): Random Forest
+
+TEST RESULTS (held-out 15%, models refit on train+validation)
+                             Model    MAE (KSh)   RMSE (KSh)  MAPE (%)  R2 (log)  R2 (KSh)
+Benchmark: section median per acre 24312286.348 1.463982e+08   846.865    -0.293 -1478.444
+        Multiple Linear Regression  1668063.166 3.494788e+06   159.136     0.518     0.157
+                     Random Forest  1625111.057 3.401521e+06   246.873     0.459     0.201
+            Support Vector Machine  1587283.563 3.151395e+06   237.368     0.482     0.314
+                 Gradient Boosting  1630714.253 3.427983e+06   192.084     0.496     0.189
+                           XGBoost  1587577.984 3.340014e+06   185.948     0.518     0.230
+         Artificial Neural Network  1675630.027 3.523349e+06   204.262     0.474     0.143
+
+Cross-validation of Random Forest on all 1410 parcels
+                    Validation   MAE (KSh)  MAE fold sd (KSh)  R2 (log)  Median abs % error
+         Grouped 5-fold (used) 1984180.728         139964.664     0.412              55.720
+Random 5-fold (for comparison) 1878475.612         210935.335     0.614              46.779
+
+Permutation importance (increase in log-MAE when feature is shuffled)
+        feature  importance     sd
+       location      0.4035 0.0363
+    log_area_ha      0.1582 0.0208
+  log_parcel_no      0.1512 0.0222
+      year_2023      0.0301 0.0075
+has_description      0.0076 0.0059
+    road_access      0.0060 0.0031
+        dist_km      0.0051 0.0031
+   near_amenity      0.0014 0.0008
+       off_road      0.0009 0.0008
+
+SHAP computed for Random Forest

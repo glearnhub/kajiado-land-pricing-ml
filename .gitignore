@@ -1,0 +1,7 @@
+# Word/Excel lock files
+~$*
+# Python
+__pycache__/
+*.pyc
+# console captures from runs
+modelling/outputs/*stdout.txt
