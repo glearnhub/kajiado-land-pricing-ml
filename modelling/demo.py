@@ -8,6 +8,7 @@ Menu:
   2  Show predictions for random test parcels, next to their real assessed values
   3  Price a new parcel - type in its location, size and description
   4  Explain one prediction (which features pushed the price up or down)
+  5  Open the report charts (Figures 4.1-4.5) in the image viewer
   0  Exit
 """
 import io
@@ -167,14 +168,51 @@ def explain(row=None):
     print(f"  = Prediction: {ksh(np.exp(base + sv.sum()))}   (remaining features have small effects)")
 
 
+CHARTS = [
+    ("fig_value_distribution.png", "Distribution of land values, raw and log scale (Figure 4.1)"),
+    ("fig_cv_comparison.png", "Model comparison: grouped cross-validation MAE and R2 (Figure 4.2)"),
+    ("actual_vs_predicted.png", "Random Forest: actual vs predicted on the test set (Figure 4.3)"),
+    ("fig_permutation_importance.png", "Permutation importance (Figure 4.4)"),
+    ("shap_summary.png", "SHAP summary: how each feature moves the price (Figure 4.5)"),
+]
+
+
+def open_file(path):
+    import os, subprocess, sys
+    if sys.platform.startswith("win"):
+        os.startfile(path)
+    elif sys.platform == "darwin":
+        subprocess.Popen(["open", str(path)])
+    else:
+        subprocess.Popen(["xdg-open", str(path)])
+
+
+def charts():
+    print()
+    for i, (f, title) in enumerate(CHARTS, 1):
+        print(f"  {i}  {title}")
+    print("  A  Open all")
+    k = input("Which chart? ").strip().lower()
+    pick = CHARTS if k == "a" else [CHARTS[int(k) - 1]] if k.isdigit() and 1 <= int(k) <= len(CHARTS) else []
+    for f, title in pick:
+        path = OUT / f
+        if path.exists():
+            open_file(path)
+            print(f"  opened: {title}")
+        else:
+            print(f"  missing {f} - run land_price_models.py and report_figures.py first")
+
+
 last = None
 while True:
     print("\n=== Kajiado land price model demo ===")
     print("1 Test all models on held-out data   2 Predict random test parcels")
-    print("3 Price a new parcel                 4 Explain a prediction   0 Exit")
+    print("3 Price a new parcel                 4 Explain a prediction")
+    print("5 Show charts                        0 Exit")
     c = input("Choose: ").strip()
     if c == "1": test_all()
     elif c == "2": sample()
     elif c == "3": last = new_parcel()
     elif c == "4": explain(last if last is not None and ask("Explain the parcel you just priced? y/n [y]: ", str, "y").lower().startswith("y") else None)
+    elif c == "5": charts()
     elif c == "0": break

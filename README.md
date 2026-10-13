@@ -94,6 +94,7 @@ The demo loads in about 10 seconds and shows a menu:
 | 2 | Predicts 8 random test parcels and shows them next to their actual values |
 | 3 | Prices a new parcel from details you type in (location, area, road access, ...) |
 | 4 | Explains a prediction: which features raised or lowered the price |
+| 5 | Opens the report charts (Figures 4.1–4.5) in the image viewer |
 | 0 | Exits |
 
 ### 5. Reproduce the full analysis (optional)
